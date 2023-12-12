@@ -22,7 +22,17 @@ const getAllUserService = async () => {
   }
 };
 
+const getUserByIdService = async (userId: number) => {
+  try {
+    const result = await UserModel.findOne({ userId });
+    return result;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const userServices = {
   createUserService,
   getAllUserService,
+  getUserByIdService,
 };

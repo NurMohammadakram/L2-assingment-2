@@ -24,7 +24,7 @@ const getAllUser = async (req: Request, res: Response) => {
     const userData = await userServices.getAllUserService();
     res.status(200).json({
       success: true,
-      message: 'all user retrieved',
+      message: 'Users fetched successfully!',
       data: userData,
     });
   } catch (err) {
@@ -35,7 +35,31 @@ const getAllUser = async (req: Request, res: Response) => {
   }
 };
 
+const getUserById = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    console.log(userId);
+    const singleUserData = await userServices.getUserByIdService(
+      parseInt(userId),
+    );
+    res.status(200).json({
+      success: true,
+      message: 'User fetched successfully!',
+      data: singleUserData,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: 'User not found!',
+      },
+    });
+  }
+};
 export const userControllers = {
   createUser,
   getAllUser,
+  getUserById,
 };
