@@ -4,24 +4,38 @@ import { userServices } from './user.service';
 const createUser = async (req: Request, res: Response) => {
   try {
     const user = req.body;
-    console.log(user);
-    const userData = await userServices.createUserService(user);
+    const userData = await userServices.createUserIntoDB(user);
+
+    let withoutPassword;
+    if (userData) {
+      withoutPassword = {
+        userId: userData.userId,
+        username: userData.username,
+        fullName: userData.fullName,
+        age: userData.age,
+        email: userData.email,
+        isActive: userData.isActive,
+        hobbies: userData.hobbies,
+        address: userData.address,
+      };
+    }
     res.status(200).json({
       success: true,
       messege: 'User created successfully!',
-      data: userData,
+      data: withoutPassword,
     });
   } catch (err) {
     res.status(500).json({
       success: false,
       messege: 'error happend',
+      error: err,
     });
   }
 };
 
 const getAllUser = async (req: Request, res: Response) => {
   try {
-    const userData = await userServices.getAllUserService();
+    const userData = await userServices.getAllUserFromDB();
     res.status(200).json({
       success: true,
       message: 'Users fetched successfully!',
@@ -31,6 +45,7 @@ const getAllUser = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: 'can not find users',
+      error: err,
     });
   }
 };
@@ -38,23 +53,17 @@ const getAllUser = async (req: Request, res: Response) => {
 const getUserById = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    console.log(userId);
-    const singleUserData = await userServices.getUserByIdService(
-      parseInt(userId),
-    );
+    const UserData = await userServices.getUserByIdFromDB(parseInt(userId));
     res.status(200).json({
       success: true,
       message: 'User fetched successfully!',
-      data: singleUserData,
+      data: UserData,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: 'User not found',
-      error: {
-        code: 404,
-        description: 'User not found!',
-      },
+      message: err.message || 'User not found',
+      error: err,
     });
   }
 };

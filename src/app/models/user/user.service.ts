@@ -1,8 +1,11 @@
 import { UserInterface } from './user.interface';
 import { UserModel } from './user.model';
 
-const createUserService = async (user: UserInterface) => {
+const createUserIntoDB = async (user: UserInterface) => {
   try {
+    if (await UserModel.isUserExists(user.userId)) {
+      throw new Error('User already exists');
+    }
     const result = await UserModel.create(user);
     return result;
   } catch (err) {
@@ -10,7 +13,7 @@ const createUserService = async (user: UserInterface) => {
   }
 };
 
-const getAllUserService = async () => {
+const getAllUserFromDB = async () => {
   try {
     const result = await UserModel.find(
       {},
@@ -22,17 +25,36 @@ const getAllUserService = async () => {
   }
 };
 
-const getUserByIdService = async (userId: number) => {
+const getUserByIdFromDB = async (userId: number) => {
   try {
-    const result = await UserModel.findOne({ userId });
+    if (await UserModel.isUserExists(userId)) {
+      throw new Error('User not found');
+    }
+
+    const result = await UserModel.findOne(
+      { userId },
+      {
+        password: 0,
+      },
+    );
     return result;
   } catch (err) {
     console.log(err);
   }
 };
 
+const updateUserIntoDB = async (userId: number) => {
+  try {
+    const data = await UserModel.updateOne({ userId }, {});
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const userServices = {
-  createUserService,
-  getAllUserService,
-  getUserByIdService,
+  createUserIntoDB,
+  getAllUserFromDB,
+  getUserByIdFromDB,
+  updateUserIntoDB,
 };
