@@ -54,6 +54,26 @@ const addOrdersIntoDB = async (userId: number, product: OrdersInterface) => {
   throw new Error('User not found');
 };
 
+const getOrdersFromDB = async (userId: number) => {
+  const user = await UserModel.isUserExists(userId);
+  if (user) {
+    return user.orders;
+  }
+  throw new Error('User not found');
+};
+
+const getTotalPriceFromDB = async (userId: number) => {
+  const user = await UserModel.isUserExists(userId);
+  if (user?.orders) {
+    let total = 0;
+    for (const product of user.orders) {
+      total += product.price * product.quantity;
+    }
+    return total;
+  }
+  throw new Error('User not found');
+};
+
 export const userServices = {
   createUserIntoDB,
   getAllUserFromDB,
@@ -61,4 +81,6 @@ export const userServices = {
   updateUserIntoDB,
   deleteUserFromDB,
   addOrdersIntoDB,
+  getOrdersFromDB,
+  getTotalPriceFromDB,
 };
