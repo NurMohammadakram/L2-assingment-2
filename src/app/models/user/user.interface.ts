@@ -11,6 +11,12 @@ export type AddressInterface = {
   country: string;
 };
 
+export type OrdersInterface = {
+  productName: string;
+  price: number;
+  quantity: number;
+};
+
 export type UserInterface = {
   userId: number;
   username: string;
@@ -22,6 +28,7 @@ export type UserInterface = {
   hobbies: string[];
   address: AddressInterface;
   isDeleted?: boolean;
+  orders?: OrdersInterface[];
 };
 
 export interface UserStaticModel extends Model<UserInterface> {

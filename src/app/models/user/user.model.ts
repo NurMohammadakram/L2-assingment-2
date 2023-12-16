@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 import {
   AddressInterface,
+  OrdersInterface,
   UserInterface,
   UserNameInterface,
   UserStaticModel,
@@ -19,6 +20,12 @@ export const addressSchema = new Schema<AddressInterface>({
   country: { type: String, required: true },
 });
 
+export const ordersSchema = new Schema<OrdersInterface>({
+  productName: { type: String, required: true },
+  price: { type: Number, required: true },
+  quantity: { type: Number, required: true },
+});
+
 export const userSchema = new Schema<UserInterface, UserStaticModel>({
   userId: { type: Number, required: true, unique: true },
   username: { type: String, required: true, unique: true },
@@ -30,6 +37,7 @@ export const userSchema = new Schema<UserInterface, UserStaticModel>({
   hobbies: { type: [String], default: [], required: true },
   address: { type: addressSchema, required: true },
   isDeleted: { type: Boolean, default: false },
+  orders: { type: [ordersSchema] },
 });
 
 //######## Hashing password  ##########

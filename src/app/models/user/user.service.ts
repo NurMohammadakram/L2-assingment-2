@@ -1,4 +1,4 @@
-import { UserInterface } from './user.interface';
+import { OrdersInterface, UserInterface } from './user.interface';
 import { UserModel } from './user.model';
 
 const createUserIntoDB = async (user: UserInterface) => {
@@ -21,7 +21,7 @@ const getUserByIdFromDB = async (userId: number) => {
   if (await UserModel.isUserExists(userId)) {
     const result = await UserModel.findOne(
       { userId },
-      { password: 0, isDeleted: 0 },
+      { password: 0, isDeleted: 0, orders: 0 },
     );
     return result;
   }
@@ -30,8 +30,8 @@ const getUserByIdFromDB = async (userId: number) => {
 
 const updateUserIntoDB = async (userId: number, data: UserInterface) => {
   if (await UserModel.isUserExists(userId)) {
-    const newData = await UserModel.updateOne({ userId }, data);
-    return newData;
+    const updatingInfo = await UserModel.updateOne({ userId }, data);
+    return updatingInfo;
   }
   throw new Error('User not found');
 };
@@ -44,10 +44,21 @@ const deleteUserFromDB = async (userId: number) => {
   throw new Error('User not found');
 };
 
+const addOrdersIntoDB = async (userId: number, product: OrdersInterface) => {
+  const user = await UserModel.isUserExists(userId);
+  if (user) {
+    user.orders?.push(product);
+    const updatingInfo = await UserModel.updateOne({ userId }, user);
+    return updatingInfo;
+  }
+  throw new Error('User not found');
+};
+
 export const userServices = {
   createUserIntoDB,
   getAllUserFromDB,
   getUserByIdFromDB,
   updateUserIntoDB,
   deleteUserFromDB,
+  addOrdersIntoDB,
 };

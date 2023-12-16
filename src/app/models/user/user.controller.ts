@@ -75,19 +75,20 @@ const updateUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const data = req.body;
-    const UserData = await userServices.updateUserIntoDB(
+    const updatingInfo = await userServices.updateUserIntoDB(
       parseInt(userId),
       data,
     );
+    const newData = await userServices.getUserByIdFromDB(parseInt(userId));
     res.status(200).json({
       success: true,
-      message: 'User fetched successfully!',
-      data: UserData,
+      message: 'User fetched successfully!' || updatingInfo,
+      data: newData,
     });
   } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: err.message || 'error happend: Could not update user',
+      message: err.message,
       error: {
         code: 404,
         description: err.message,
@@ -116,10 +117,38 @@ const deleteUser = async (req: Request, res: Response) => {
     });
   }
 };
+
+const addOrders = async (req: Request, res: Response) => {
+  try {
+    const product = req.body;
+    const { userId } = req.params;
+
+    const responseData = await userServices.addOrdersIntoDB(
+      parseInt(userId),
+      product,
+    );
+    res.status(200).json({
+      success: true,
+      message: 'Order created successfully!',
+      data: responseData,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+      error: {
+        code: 404,
+        description: err.message,
+      },
+    });
+  }
+};
+
 export const userControllers = {
   createUser,
   getAllUser,
   getUserById,
   updateUser,
   deleteUser,
+  addOrders,
 };
