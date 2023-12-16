@@ -2,54 +2,45 @@ import { UserInterface } from './user.interface';
 import { UserModel } from './user.model';
 
 const createUserIntoDB = async (user: UserInterface) => {
-  try {
-    if (await UserModel.isUserExists(user.userId)) {
-      throw new Error('User already exists');
-    }
-    const result = await UserModel.create(user);
-    return result;
-  } catch (err) {
-    console.log(err);
+  if (await UserModel.isUserExists(user.userId)) {
+    throw new Error('User already exists');
   }
+  const result = await UserModel.create(user);
+  return result;
 };
 
 const getAllUserFromDB = async () => {
-  try {
-    const result = await UserModel.find(
-      {},
-      { username: 1, fullName: 1, age: 1, email: 1, address: 1 },
-    );
-    return result;
-  } catch (err) {
-    console.log(err);
-  }
+  const result = await UserModel.find(
+    {},
+    { username: 1, fullName: 1, age: 1, email: 1, address: 1 },
+  );
+  return result;
 };
 
 const getUserByIdFromDB = async (userId: number) => {
-  try {
-    if (await UserModel.isUserExists(userId)) {
-      throw new Error('User not found');
-    }
-
-    const result = await UserModel.findOne(
-      { userId },
-      {
-        password: 0,
-      },
-    );
+  console.log('get user by id:', await UserModel.isUserExists(userId));
+  if (await UserModel.isUserExists(userId)) {
+    const result = await UserModel.findOne({ userId }, { password: 0 });
     return result;
-  } catch (err) {
-    console.log(err);
   }
+  throw new Error('User not found');
 };
 
-const updateUserIntoDB = async (userId: number) => {
-  try {
-    const data = await UserModel.updateOne({ userId }, {});
-    return data;
-  } catch (err) {
-    console.log(err);
+const updateUserIntoDB = async (userId: number, data: UserInterface) => {
+  if (await UserModel.isUserExists(userId)) {
+    const newData = await UserModel.updateOne({ userId }, data);
+    return newData;
   }
+  throw new Error('User not found');
+};
+
+const deleteUserFromDB = async (userId: number) => {
+  console.log('get user by id:', !(await UserModel.isUserExists(userId)));
+  if (!(await UserModel.isUserExists(userId))) {
+    throw new Error('User not found');
+  }
+  const data = await UserModel.updateOne({ userId }, { isDeleted: true });
+  return data;
 };
 
 export const userServices = {
@@ -57,4 +48,5 @@ export const userServices = {
   getAllUserFromDB,
   getUserByIdFromDB,
   updateUserIntoDB,
+  deleteUserFromDB,
 };

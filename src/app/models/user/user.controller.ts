@@ -24,10 +24,10 @@ const createUser = async (req: Request, res: Response) => {
       messege: 'User created successfully!',
       data: withoutPassword,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({
       success: false,
-      messege: 'error happend',
+      messege: err.message || 'some internal error happend',
       error: err,
     });
   }
@@ -44,7 +44,7 @@ const getAllUser = async (req: Request, res: Response) => {
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: 'can not find users',
+      message: 'error happend: could not find users',
       error: err,
     });
   }
@@ -62,7 +62,47 @@ const getUserById = async (req: Request, res: Response) => {
   } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: err.message || 'User not found',
+      message: err.message || 'error happend: something went wrong!',
+      error: err,
+    });
+  }
+};
+
+const updateUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const data = req.body;
+    const UserData = await userServices.updateUserIntoDB(
+      parseInt(userId),
+      data,
+    );
+    res.status(200).json({
+      success: true,
+      message: 'User fetched successfully!',
+      data: UserData,
+    });
+  } catch (err: any) {
+    res.status(404).json({
+      success: false,
+      message: err.message || 'error happend: Could not update user',
+      error: err,
+    });
+  }
+};
+
+const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const UserData = await userServices.deleteUserFromDB(parseInt(userId));
+    res.status(200).json({
+      success: true,
+      message: 'User deleted successfully!',
+      data: UserData,
+    });
+  } catch (err: any) {
+    res.status(404).json({
+      success: false,
+      message: err.message || 'error happend: could not delete user',
       error: err,
     });
   }
@@ -71,4 +111,6 @@ export const userControllers = {
   createUser,
   getAllUser,
   getUserById,
+  updateUser,
+  deleteUser,
 };
