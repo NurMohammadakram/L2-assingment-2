@@ -21,6 +21,7 @@ export type UserInterface = {
   isActive: boolean;
   hobbies: string[];
   address: AddressInterface;
+  isDeleted?: boolean;
 };
 
 export interface UserStaticModel extends Model<UserInterface> {

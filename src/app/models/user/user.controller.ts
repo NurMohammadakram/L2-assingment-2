@@ -63,7 +63,10 @@ const getUserById = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: err.message || 'error happend: something went wrong!',
-      error: err,
+      error: {
+        code: 404,
+        description: err.message,
+      },
     });
   }
 };
@@ -82,10 +85,13 @@ const updateUser = async (req: Request, res: Response) => {
       data: UserData,
     });
   } catch (err: any) {
-    res.status(404).json({
+    res.status(500).json({
       success: false,
       message: err.message || 'error happend: Could not update user',
-      error: err,
+      error: {
+        code: 404,
+        description: err.message,
+      },
     });
   }
 };
@@ -100,10 +106,13 @@ const deleteUser = async (req: Request, res: Response) => {
       data: UserData,
     });
   } catch (err: any) {
-    res.status(404).json({
+    res.status(500).json({
       success: false,
       message: err.message || 'error happend: could not delete user',
-      error: err,
+      error: {
+        code: 404,
+        description: err.message,
+      },
     });
   }
 };

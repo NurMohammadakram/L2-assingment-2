@@ -18,9 +18,11 @@ const getAllUserFromDB = async () => {
 };
 
 const getUserByIdFromDB = async (userId: number) => {
-  console.log('get user by id:', await UserModel.isUserExists(userId));
   if (await UserModel.isUserExists(userId)) {
-    const result = await UserModel.findOne({ userId }, { password: 0 });
+    const result = await UserModel.findOne(
+      { userId },
+      { password: 0, isDeleted: 0 },
+    );
     return result;
   }
   throw new Error('User not found');
@@ -35,12 +37,11 @@ const updateUserIntoDB = async (userId: number, data: UserInterface) => {
 };
 
 const deleteUserFromDB = async (userId: number) => {
-  console.log('get user by id:', !(await UserModel.isUserExists(userId)));
-  if (!(await UserModel.isUserExists(userId))) {
-    throw new Error('User not found');
+  if (await UserModel.isUserExists(userId)) {
+    const data = await UserModel.updateOne({ userId }, { isDeleted: true });
+    return data;
   }
-  const data = await UserModel.updateOne({ userId }, { isDeleted: true });
-  return data;
+  throw new Error('User not found');
 };
 
 export const userServices = {

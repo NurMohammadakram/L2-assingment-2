@@ -29,8 +29,10 @@ export const userSchema = new Schema<UserInterface, UserStaticModel>({
   isActive: { type: Boolean, required: true },
   hobbies: { type: [String], default: [], required: true },
   address: { type: addressSchema, required: true },
+  isDeleted: { type: Boolean, default: false },
 });
 
+//######## Hashing password  ##########
 userSchema.pre('save', async function (next) {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const user = this;
@@ -42,14 +44,16 @@ userSchema.post('save', function (doc, next) {
   doc.password = '';
   next();
 });
-userSchema.post('find', async function (doc, next) {
-  doc.password = '';
+
+// #### filtering deleted user ########
+userSchema.pre('find', async function (next) {
+  this.find({ isDeleted: { $ne: true } });
   next();
 });
-// userSchema.post('findOne', async function (doc, next) {
-// doc.password = '';
-//   next();
-// });
+userSchema.pre('findOne', async function (next) {
+  this.findOne({ isDeleted: { $ne: true } });
+  next();
+});
 
 userSchema.statics.isUserExists = async function (userId: string) {
   const existingUser = await UserModel.findOne({ userId });
