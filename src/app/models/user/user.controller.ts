@@ -6,6 +6,7 @@ import {
   userValidationSchema,
 } from './user.validation';
 
+// While creating a user into DB, handling request and response
 const createUser = async (req: Request, res: Response) => {
   try {
     const user = req.body;
@@ -39,6 +40,7 @@ const createUser = async (req: Request, res: Response) => {
   }
 };
 
+// While Getting all user from DB, handling request and response
 const getAllUser = async (req: Request, res: Response) => {
   try {
     const userData = await userServices.getAllUserFromDB();
@@ -56,6 +58,7 @@ const getAllUser = async (req: Request, res: Response) => {
   }
 };
 
+// Getting a single user by id, handling request and response
 const getUserById = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -77,6 +80,7 @@ const getUserById = async (req: Request, res: Response) => {
   }
 };
 
+// Updating a user by its id, handling request and response
 const updateUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -104,6 +108,7 @@ const updateUser = async (req: Request, res: Response) => {
   }
 };
 
+// Delete a user, handling reqest and reponse
 const deleteUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -125,6 +130,7 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+// Adding products into orders
 const addOrders = async (req: Request, res: Response) => {
   try {
     const product = req.body;
@@ -155,6 +161,7 @@ const addOrders = async (req: Request, res: Response) => {
   }
 };
 
+// Get all orders of a user
 const getOrders = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -179,6 +186,7 @@ const getOrders = async (req: Request, res: Response) => {
   }
 };
 
+// Get total price of a user orders
 const getTotalPrice = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;

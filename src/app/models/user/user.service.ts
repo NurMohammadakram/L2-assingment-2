@@ -1,6 +1,7 @@
 import { OrdersInterface, UserInterface } from './user.interface';
 import { UserModel } from './user.model';
 
+// Creating a user into DB using model and zod validation
 const createUserIntoDB = async (user: UserInterface) => {
   if (await UserModel.isUserExists(user.userId)) {
     throw new Error('User already exists');
@@ -9,6 +10,7 @@ const createUserIntoDB = async (user: UserInterface) => {
   return result;
 };
 
+// Get all user from DB using user model
 const getAllUserFromDB = async () => {
   const result = await UserModel.find(
     {},
@@ -17,6 +19,7 @@ const getAllUserFromDB = async () => {
   return result;
 };
 
+// get a single user by it's id from DB
 const getUserByIdFromDB = async (userId: number) => {
   if (await UserModel.isUserExists(userId)) {
     const result = await UserModel.findOne(
@@ -28,6 +31,7 @@ const getUserByIdFromDB = async (userId: number) => {
   throw new Error('User not found');
 };
 
+// updating a user using update zod validation and user model
 const updateUserIntoDB = async (userId: number, data: UserInterface) => {
   if (await UserModel.isUserExists(userId)) {
     const updatingInfo = await UserModel.updateOne({ userId }, data);
@@ -36,6 +40,7 @@ const updateUserIntoDB = async (userId: number, data: UserInterface) => {
   throw new Error('User not found');
 };
 
+// Delete a user adding a isDeleted property true, and further filter the user with this property
 const deleteUserFromDB = async (userId: number) => {
   if (await UserModel.isUserExists(userId)) {
     const data = await UserModel.updateOne({ userId }, { isDeleted: true });
@@ -44,6 +49,7 @@ const deleteUserFromDB = async (userId: number) => {
   throw new Error('User not found');
 };
 
+// Adding product into orders property into DB
 const addOrdersIntoDB = async (userId: number, product: OrdersInterface) => {
   const user = await UserModel.isUserExists(userId);
   if (user) {
@@ -54,6 +60,7 @@ const addOrdersIntoDB = async (userId: number, product: OrdersInterface) => {
   throw new Error('User not found');
 };
 
+// Get all orders of a user by its id from DB
 const getOrdersFromDB = async (userId: number) => {
   const user = await UserModel.isUserExists(userId);
   if (user) {
@@ -62,6 +69,7 @@ const getOrdersFromDB = async (userId: number) => {
   throw new Error('User not found');
 };
 
+// Get total price of a user total orders from DB
 const getTotalPriceFromDB = async (userId: number) => {
   const user = await UserModel.isUserExists(userId);
   if (user?.orders) {

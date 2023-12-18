@@ -26,6 +26,7 @@ export const ordersSchema = new Schema<OrdersInterface>({
   quantity: { type: Number, required: true },
 });
 
+// main schema. user schema for mongoose validation
 export const userSchema = new Schema<UserInterface, UserStaticModel>({
   userId: { type: Number, required: true, unique: true },
   username: { type: String, required: true, unique: true },
@@ -63,12 +64,14 @@ userSchema.pre('findOne', async function (next) {
   next();
 });
 
+// checking user is exists or not in the Database
 userSchema.statics.isUserExists = async function (userId: string) {
   const existingUser = await UserModel.findOne({ userId });
   console.log(existingUser);
   return existingUser;
 };
 
+// user model
 export const UserModel = model<UserInterface, UserStaticModel>(
   'User',
   userSchema,

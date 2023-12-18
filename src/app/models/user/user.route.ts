@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { userControllers } from './user.controller';
 
 const router = Router();
-
+// routers
 router.post('/', userControllers.createUser);
 router.get('/', userControllers.getAllUser);
 router.get('/:userId', userControllers.getUserById);
