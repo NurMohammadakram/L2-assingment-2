@@ -34,10 +34,10 @@ export const userSchema = new Schema<UserInterface, UserStaticModel>({
   age: { type: Number, required: true },
   email: { type: String, required: true },
   isActive: { type: Boolean, required: true },
-  hobbies: { type: [String], default: [], required: true },
+  hobbies: { type: [String], required: true },
   address: { type: addressSchema, required: true },
-  isDeleted: { type: Boolean, default: false },
-  orders: { type: [ordersSchema] },
+  isDeleted: { type: Boolean, default: false, optional: true },
+  orders: { type: [ordersSchema], default: [], optional: true },
 });
 
 //######## Hashing password  ##########

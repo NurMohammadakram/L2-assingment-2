@@ -1,10 +1,16 @@
 import { Request, Response } from 'express';
 import { userServices } from './user.service';
+import {
+  ordersValidationSchema,
+  userUpdateValidationSchema,
+  userValidationSchema,
+} from './user.validation';
 
 const createUser = async (req: Request, res: Response) => {
   try {
     const user = req.body;
-    const userData = await userServices.createUserIntoDB(user);
+    const validData = userValidationSchema.parse(user);
+    const userData = await userServices.createUserIntoDB(validData);
 
     let withoutPassword;
     if (userData) {
@@ -75,9 +81,10 @@ const updateUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const data = req.body;
+    const validData = userUpdateValidationSchema.parse(data);
     const updatingInfo = await userServices.updateUserIntoDB(
       parseInt(userId),
-      data,
+      validData,
     );
     const newData = await userServices.getUserByIdFromDB(parseInt(userId));
     res.status(200).json({
@@ -121,11 +128,15 @@ const deleteUser = async (req: Request, res: Response) => {
 const addOrders = async (req: Request, res: Response) => {
   try {
     const product = req.body;
+    product.price = parseInt(product.price);
+    product.quantity = parseInt(product.quantity);
+
+    const validProduct = ordersValidationSchema.parse(product);
     const { userId } = req.params;
 
     const responseData = await userServices.addOrdersIntoDB(
       parseInt(userId),
-      product,
+      validProduct,
     );
     res.status(200).json({
       success: true,
